@@ -5,8 +5,68 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Semiconductor_Equipment_Monitor"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        
+        Title="半导体产线设备监测工具"  Height="600" Width="1000" Background="#39c5bb" Foreground="White">
+    <Window.Resources>
+        <local:StatusToColorConverter x:Key="StatusToColorConverter"/>
+    </Window.Resources>
+    <Grid Margin="20">
+        <Grid.Background>
+            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                <GradientStop Color="Black" Offset="1"/>
+                <GradientStop Color="#FF67FFAA" Offset="0"/>
+                <GradientStop Color="#FF276241" Offset="0.919"/>
+                <GradientStop Color="White" Offset="0.77"/>
+            </LinearGradientBrush>
+        </Grid.Background>
+        <Grid.RowDefinitions>
+            <!--整体分为两行：顶部统计区+设备列表区-->
+            <RowDefinition Height="Auto"/>
+            <!--高度自适应-->
+            <RowDefinition Height="*"/>
+            <!--占满剩余空间-->
+        </Grid.RowDefinitions>
+        <!--第一部分 顶部统计区 包括 设备总数/运行状态/功能按钮-->
+        <Grid Grid.Row="0" Margin="0 0 0 20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <!--数据统计-->
+            <StackPanel Grid.Column="0" Orientation="Horizontal">
+                <TextBlock Text="设备总数：20" FontSize="16" FontWeight="Bold" Margin="0 0 20 0"/>
+                <TextBlock Text="运行中：15" FontSize="16" Foreground="#4CAF50" Margin="0 0 20 0"/>
+                <TextBlock Text="报警：2" FontSize="16" Foreground="#F44336" Margin="0 0 20 0"/>
+                <TextBlock Text="离线：3" FontSize="16" Foreground="#9E9E9E" Margin="0 0 20 0"/>
+            </StackPanel>
+            <!--操作按钮-->
+            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                <Button Content="刷新" Width="80" Height="30" Background="#2196F3" Foreground="White" BorderThickness="0" Margin="0 0 10 0"/>
+                <Button Content="工单查询" Width="80" Height="30" Background="#2196F3" Foreground="White" BorderThickness="0" Margin="0 0 10 0"/>
+                <Button Content="报警记录" Width="80" Height="30" Background="#2196F3" Foreground="White" BorderThickness="0" Margin="0 0 10 0"/>
+            </StackPanel>
+        </Grid>
+
+        <!--中间部分 设备列表-->
+        <ListView Grid.Row="1" Background="#FFFCF5F5" BorderThickness="0" ItemsSource="{Binding EquipmentList}">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="设备编号" DisplayMemberBinding="{Binding EqpId}" Width="120"/>
+                    <GridViewColumn Header="设备名称" DisplayMemberBinding="{Binding EqpName}" Width="150"/>
+                    <GridViewColumn Header="状态"  Width="100">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <Ellipse Width="10" Height="10" Fill="{Binding Status,Converter={StaticResource StatusToColorConverter}}" Margin=" 0 0 5 0"/>
+                                    <TextBlock Text="{Binding Status}"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="今日产量" DisplayMemberBinding="{Binding OutputToday}" Width="120"/>
+                    <GridViewColumn Header="最后更新时间" DisplayMemberBinding="{Binding LastUpdateTime}" Width="200"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
+
     </Grid>
 </Window>

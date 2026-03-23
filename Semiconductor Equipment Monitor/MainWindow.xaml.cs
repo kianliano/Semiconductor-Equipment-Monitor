@@ -23,6 +23,9 @@ namespace Semiconductor_Equipment_Monitor
         public MainWindow()
         {
             InitializeComponent();
+            DataContext = new EquipmentViewModel();
         }
     }
+
+    
 }
