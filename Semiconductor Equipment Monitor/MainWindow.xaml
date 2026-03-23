@@ -33,16 +33,17 @@
             </Grid.ColumnDefinitions>
             <!--数据统计-->
             <StackPanel Grid.Column="0" Orientation="Horizontal">
-                <TextBlock Text="设备总数：20" FontSize="16" FontWeight="Bold" Margin="0 0 20 0"/>
-                <TextBlock Text="运行中：15" FontSize="16" Foreground="#4CAF50" Margin="0 0 20 0"/>
-                <TextBlock Text="报警：2" FontSize="16" Foreground="#F44336" Margin="0 0 20 0"/>
-                <TextBlock Text="离线：3" FontSize="16" Foreground="#9E9E9E" Margin="0 0 20 0"/>
+                <TextBlock Text="{Binding TotalCount,StringFormat='设备总数：{0}'}" FontSize="16" FontWeight="Bold" Margin="10 10 20 0"/>
+                <TextBlock Text="{Binding RunningCount, StringFormat='运行中：{0}'}" FontSize="16" Foreground="#4CAF50" Margin="0 10 20 0"/>
+                <TextBlock Text="{Binding AlarmCount, StringFormat='报警：{0}'}" FontSize="16" Foreground="#F44336" Margin="0 10 20 0"/>
+                <TextBlock Text="{Binding OfflineCount,StringFormat='离线：{0}'}" FontSize="16" Foreground="#9E9E9E" Margin="0 10 20 0"/>
+                <TextBlock Text="{Binding IdleCount,StringFormat='空闲：{0}'}" FontSize="16" Foreground="#9E9E9E" Margin="0 10 20 0"/>
             </StackPanel>
             <!--操作按钮-->
             <StackPanel Grid.Column="1" Orientation="Horizontal">
-                <Button Content="刷新" Width="80" Height="30" Background="#2196F3" Foreground="White" BorderThickness="0" Margin="0 0 10 0"/>
-                <Button Content="工单查询" Width="80" Height="30" Background="#2196F3" Foreground="White" BorderThickness="0" Margin="0 0 10 0"/>
-                <Button Content="报警记录" Width="80" Height="30" Background="#2196F3" Foreground="White" BorderThickness="0" Margin="0 0 10 0"/>
+                <Button Content="刷新" Width="80" Height="30" Background="#2196F3" Foreground="White" BorderThickness="0" Margin="0 10 10 0"/>
+                <Button Content="工单查询" Width="80" Height="30" Background="#2196F3" Foreground="White" BorderThickness="0" Margin="0 10 10 0"/>
+                <Button Content="报警记录" Width="80" Height="30" Background="#2196F3" Foreground="White" BorderThickness="0" Margin="0 10 10 0"/>
             </StackPanel>
         </Grid>
 

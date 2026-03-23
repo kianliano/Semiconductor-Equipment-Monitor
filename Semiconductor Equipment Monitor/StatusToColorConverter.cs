@@ -11,7 +11,7 @@ namespace Semiconductor_Equipment_Monitor
 {
     public class StatusToColorConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)//正向转换 status->color
         {
             if (value is EquipmentStatus status) 
             {
@@ -22,6 +22,8 @@ namespace Semiconductor_Equipment_Monitor
                         return Brushes.Red;
                     case EquipmentStatus.Offline:
                         return Brushes.Gray;
+                    case EquipmentStatus.Idle:
+                        return Brushes.Black;
                     default:
                         return Brushes.Black;
                 }
