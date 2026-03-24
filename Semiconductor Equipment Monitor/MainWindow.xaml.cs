@@ -25,6 +25,15 @@ namespace Semiconductor_Equipment_Monitor
             InitializeComponent();
             DataContext = new EquipmentViewModel();
         }
+
+
+        ////普通事件绑定 
+        //private void RefreshButtonClicked(object sender, RoutedEventArgs e)
+        //{
+        //    if (DataContext is EquipmentViewModel vm) { 
+        //        vm.RefreshEquipmentData();
+        //    }
+        //}
     }
 
     

@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Semiconductor_Equipment_Monitor"
+        xmlns:local="clr-namespace:Semiconductor_Equipment_Monitor" d:DataContext="{d:DesignInstance Type=local:EquipmentViewModel}"
         mc:Ignorable="d"
         Title="半导体产线设备监测工具"  Height="600" Width="1000" Background="#39c5bb" Foreground="White">
     <Window.Resources>
@@ -41,9 +41,9 @@
             </StackPanel>
             <!--操作按钮-->
             <StackPanel Grid.Column="1" Orientation="Horizontal">
-                <Button Content="刷新" Width="80" Height="30" Background="#2196F3" Foreground="White" BorderThickness="0" Margin="0 10 10 0"/>
-                <Button Content="工单查询" Width="80" Height="30" Background="#2196F3" Foreground="White" BorderThickness="0" Margin="0 10 10 0"/>
-                <Button Content="报警记录" Width="80" Height="30" Background="#2196F3" Foreground="White" BorderThickness="0" Margin="0 10 10 0"/>
+                <Button Content="刷新" Width="80" Height="30" Background="#2196F3" Foreground="White" BorderThickness="0" Margin="0 10 10 0" Command="{Binding RefreshCmd}"/>
+                <Button Content="工单查询" Width="80" Height="30" Background="#2196F3" Foreground="White" BorderThickness="0" Margin="0 10 10 0" Command="{Binding QueryWorkOrderCmd}"/>
+                <Button Content="报警记录" Width="80" Height="30" Background="#2196F3" Foreground="White" BorderThickness="0" Margin="0 10 10 0" Command="{Binding AlarmRecordCmd}"/>
             </StackPanel>
         </Grid>
 
