@@ -9,15 +9,29 @@ using System.ComponentModel;
 using System.Collections.Specialized;
 using System.Windows.Input;
 using System.Windows;
+using System.Data;
+using MySqlConnector;
 
 namespace Semiconductor_Equipment_Monitor
 {
     public class EquipmentViewModel:INotifyPropertyChanged
     {
+       //MySQL 链接字符串
+        private const string _connectionString =
+            "server=localhost;"+
+            "user=root;"+
+            "password=123456;"+
+            "database=WpfEquipment;"+
+            "port=3306;"+
+            "charset=utf8mb4";
+
+
         public ObservableCollection<Equipment> EquipmentList { get; set; }//设备列表
         public ICommand RefreshCmd { get; }//刷新按钮的MVVM命令绑定
         public ICommand QueryWorkOrderCmd { get; }//工单查询
         public ICommand AlarmRecordCmd { get; }//报警记录
+        public ICommand Save2MySqlCmd { get; }//保存数据至数据库
+
 
 
         //统计运行状态
@@ -26,7 +40,7 @@ namespace Semiconductor_Equipment_Monitor
         public int AlarmCount => EquipmentList.Count(e => e.Status == EquipmentStatus.Alarm);
         public int OfflineCount => EquipmentList.Count(e => e.Status == EquipmentStatus.Offline);
         public int IdleCount => EquipmentList.Count(e => e.Status == EquipmentStatus.Idle);
-
+        
 
         public EquipmentViewModel()//构造函数
         {
@@ -38,6 +52,8 @@ namespace Semiconductor_Equipment_Monitor
             RefreshCmd = new RelayCommand(RefreshEquipmentData);//刷新
             QueryWorkOrderCmd = new RelayCommand(QueryWorkOrder);//工单查询
             AlarmRecordCmd = new RelayCommand(ShowAlarmRecord);//报警记录
+            Save2MySqlCmd = new RelayCommand(SaveEquipment2MySql);//保存数据至数据库
+
         }
 
         private void InitEquipmentData()//初始化设备列表
@@ -155,6 +171,50 @@ namespace Semiconductor_Equipment_Monitor
         }
 
 
+        private void SaveEquipment2MySql() 
+        {
+            try
+            {
+                //1.创建数据库链接
+                using (var conn = new MySqlConnection(_connectionString))
+                {
+                    //2.打开链接
+                    conn.Open();
+                    //3.清空旧数据（测试用，正式环境需删除）   命令 清空equipment表内数据
+                    using (var truncateCmd = new MySqlCommand("TRUNCATE TABLE Equipment",conn)) 
+                    {
+                        //执行 sqlCommand 对象中定义的sql语句
+                        truncateCmd.ExecuteNonQuery();
+                    }
+
+                    //4.循环插入各设备数据
+                    foreach (var device in EquipmentList) 
+                    {
+                        string insertSql = @"
+                            INSERT INTO Equipment (DeviceName, Status)
+                            VALUES (@DeviceName, @Status);";//@DeviceName,@Status占位符
+
+                        using (var cmd = new MySqlCommand(insertSql,conn)) 
+                        {
+                            //给参数赋值，防止SQL注入风险
+                            cmd.Parameters.AddWithValue("@DeviceName",device.EqpName);
+                            cmd.Parameters.AddWithValue("@Status",device.Status.ToString());
+
+                            //执行 插入 语句
+                            cmd.ExecuteNonQuery();
+                        }
+
+                    }
+                }
+                MessageBox.Show("✔ 设备数据已成功保存至MySQL！","成功",MessageBoxButton.OK,MessageBoxImage.Information);
+
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show($"❌ 保存失败：{ex.Message}","错误",MessageBoxButton.OK,MessageBoxImage.Error);
+            }
+        }
        
 
     }
