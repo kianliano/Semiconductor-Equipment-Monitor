@@ -10,13 +10,16 @@ namespace Semiconductor_Equipment_Monitor
 {
     public class Equipment:INotifyPropertyChanged
     {
-        public string EqpId { get; set; }//设备编号
-        public string EqpName { get; set; }//设备名称
+        public int Id { get; set; }//sql主键
+        public string EqpId { get; set; }//设备编号 唯一键
+        public string EqpName { get; set; }//全名
+        public string DeviceName { get; set; }//设备型号简称
+        public string LineId { get; set; } = "LINE-001";//产线编号
         //public EquipmentStatus Status { get; set; }//设备状态
 
         private EquipmentStatus _Status;//属性的完整声明
 
-       public EquipmentStatus Status
+        public EquipmentStatus Status
         {
             get { return _Status; }
             set { _Status = value;
@@ -25,7 +28,9 @@ namespace Semiconductor_Equipment_Monitor
         }
 
         public int OutputToday { get; set; }//产量
+        public DateTime CreateTime { get; set; }//创建时间
         public DateTime LastUpdateTime { get; set; } = DateTime.Now;//最后更新时间
+        public int IsDeleted { get; set; } = 0;//0=未删除  1=删除
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) 

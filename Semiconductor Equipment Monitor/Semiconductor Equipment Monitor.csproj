@@ -87,6 +87,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="EquipmentDataService.cs" />
     <Compile Include="RelayCommand.cs" />
     <Compile Include="StatusToColorConverter.cs" />
     <Page Include="MainWindow.xaml">
