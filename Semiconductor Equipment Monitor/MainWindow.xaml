@@ -3,11 +3,21 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Semiconductor_Equipment_Monitor" d:DataContext="{d:DesignInstance Type=local:EquipmentViewModel}"
+        xmlns:local="clr-namespace:Semiconductor_Equipment_Monitor" 
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        d:DataContext="{d:DesignInstance Type=local:EquipmentViewModel}"
         mc:Ignorable="d"
         Title="半导体产线设备监测工具"  Height="600" Width="1000" Background="#39c5bb" Foreground="White">
     <Window.Resources>
         <local:StatusToColorConverter x:Key="StatusToColorConverter"/>
+        <!--
+            <ObjectDataProvider x:Key="StatusEnum"
+                            MethodName="GetValues"
+                            ObjectType="{x:Type sys:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="local:EquipmentStatus"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>-->
     </Window.Resources>
     <Grid Margin="20">
         <Grid.Background>
@@ -46,6 +56,7 @@
                 <Button Content="报警记录" Width="80" Height="30" Background="#2196F3" Foreground="White" BorderThickness="0" Margin="0 10 10 0" Command="{Binding AlarmRecordCmd}"/>
                 <Button Content="保存至MySQL" Width="100" Height="30" Background="#2196F3" Foreground="White" BorderThickness="0" Margin="0 10 10 0" Padding="8 2"  Command="{Binding Save2MySqlCmd}"/>
                 <Button Content="从MySQL读取" Width="100" Height="30" Background="#2196F3" Foreground="White" BorderThickness="0" Margin="0 10 5 0" Padding="8 2"  Command="{Binding LoadFromSqlCmd}"/>
+               <!--  <Button Content="" Width="10" Height="30" Background="#2196F3" Foreground="White" BorderThickness="0" Margin="0 10 5 0" Padding="8 2"  Command="{Binding UpdateStatusCmd}"/>-->
             </StackPanel>
         </Grid>
 
@@ -59,9 +70,17 @@
                     <GridViewColumn Header="状态"  Width="100">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <StackPanel Orientation="Horizontal">
-                                    <Ellipse Width="10" Height="10" Fill="{Binding Status,Converter={StaticResource StatusToColorConverter}}" Margin=" 0 0 5 0"/>
-                                    <TextBlock Text="{Binding Status}"/>
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" >
+                                    <!-- 状态指示灯 -->
+                                        <Ellipse Width="10" Height="10" Fill="{Binding Status,Converter={StaticResource StatusToColorConverter}}" Margin=" 0 0 5 0"/>
+                                   <!-- <TextBlock Text="{Binding Status}"/>-->
+                                    <!-- 下拉框 -->
+                                        <ComboBox Width="60"
+                                              Margin=" 5 0 0 0"
+                                              Loaded="ComboBox_Loaded"
+                                              SelectedItem="{Binding Status,UpdateSourceTrigger=PropertyChanged}"
+                                              SelectionChanged="ComboBox_Status_SelectionChanged">
+                                    </ComboBox>
                                 </StackPanel>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>

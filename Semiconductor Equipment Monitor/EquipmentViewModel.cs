@@ -11,12 +11,26 @@ using System.Windows.Input;
 using System.Windows;
 using System.Data;
 using MySqlConnector;
+using System.Windows.Documents;
 
 namespace Semiconductor_Equipment_Monitor
 {
     public class EquipmentViewModel:INotifyPropertyChanged
     {
-       
+        //下拉框 里的值 需要枚举 
+        //public IEnumerable<EquipmentStatus> ts = Enum.GetValues(typeof(EquipmentStatus)).Cast<EquipmentStatus>();
+
+        private bool _isRefreshing = false;//加点判断 防止刷新时一直触发 下拉框更改事件
+
+        public bool isRefreshing
+        {
+            get { return _isRefreshing; }
+            set { _isRefreshing = value;
+                OnPropertyChanged();
+            }
+        }
+
+
 
         public ObservableCollection<Equipment> EquipmentList { get; set; }//设备列表
         public ICommand RefreshCmd { get; }//刷新按钮的MVVM命令绑定
@@ -24,6 +38,9 @@ namespace Semiconductor_Equipment_Monitor
         public ICommand AlarmRecordCmd { get; }//报警记录
         public ICommand Save2MySqlCmd { get; }//保存数据至数据库
         public ICommand LoadFromSqlCmd { get;}//从数据库读取数据
+
+        ////临时测试update方法
+        //public ICommand UpdateStatusCmd { get; }
 
 
 
@@ -51,6 +68,8 @@ namespace Semiconductor_Equipment_Monitor
             //用lambda表达式（）无参方法 调用 带参数方法
             Save2MySqlCmd = new RelayCommand(() =>EquipmentDataService.SaveEquipment2MySql(EquipmentList));
             LoadFromSqlCmd = new RelayCommand(() => EquipmentDataService.LoadFromMySql(EquipmentList));
+            ////测试//ok
+            //UpdateStatusCmd = new RelayCommand(() => EquipmentDataService.UpdateSingleEqpStatus("EQP-001",EquipmentStatus.Running));
 
         }
 
@@ -80,6 +99,7 @@ namespace Semiconductor_Equipment_Monitor
         }
         public void RefreshEquipmentData()//刷新设备状态与产量
         {
+            isRefreshing = true;//上锁-开始刷新
             foreach (var equipment in EquipmentList)
             {
                 var TempData = GenerateRandomData();
@@ -87,6 +107,7 @@ namespace Semiconductor_Equipment_Monitor
                 equipment.OutputToday = TempData.Value;
             }
             RefreshAllCountProperties();//主动刷新一下统计数据 保证顶部数据同步
+            isRefreshing = false;//刷新结束-解锁
         }
 
         public void QueryWorkOrder()//工单查询

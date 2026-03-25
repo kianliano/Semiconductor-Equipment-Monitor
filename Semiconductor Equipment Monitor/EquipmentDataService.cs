@@ -139,7 +139,36 @@ namespace Semiconductor_Equipment_Monitor
             }
         }
 
+        public static  void UpdateSingleEqpStatus(string eqpId, EquipmentStatus newStatus) 
+        {
+            try
+            {
+                using (var conn = new MySqlConnection(_connectionString)) 
+                {
+                    conn.Open();
 
+                    string updateSql = @"
+                            UPDATE Equipment
+                            SET Status = @Status,
+                                LastUpdateTime = NOW()
+                                WHERE EqpId = @EqpId;";
+
+                    using (var cmd = new MySqlCommand(updateSql,conn)) 
+                    {
+                        cmd.Parameters.AddWithValue("@Status",newStatus.ToString());
+                        cmd.Parameters.AddWithValue("@EqpId",eqpId);
+
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                MessageBox.Show("✔ 成功更新状态！", "成功", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show($"❌ 状态更新失败：{ex.Message}", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
 
 
     }
