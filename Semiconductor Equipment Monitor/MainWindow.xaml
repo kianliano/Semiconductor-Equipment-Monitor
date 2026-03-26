@@ -64,7 +64,7 @@
         <ListView Grid.Row="1" Background="#FFFCF5F5" BorderThickness="0" ItemsSource="{Binding EquipmentList}">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="ID" DisplayMemberBinding="{Binding Id}" Width="50"/>
+                    <!-- <GridViewColumn Header="ID" DisplayMemberBinding="{Binding Id}" Width="50"/> -->
                     <GridViewColumn Header="设备编号" DisplayMemberBinding="{Binding EqpId}" Width="120"/>
                     <GridViewColumn Header="设备名称" DisplayMemberBinding="{Binding EqpName}" Width="120"/>
                     <GridViewColumn Header="状态"  Width="100">
