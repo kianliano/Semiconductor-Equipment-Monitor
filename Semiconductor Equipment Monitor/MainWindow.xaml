@@ -36,32 +36,71 @@
             <!--占满剩余空间-->
         </Grid.RowDefinitions>
         <!--第一部分 顶部统计区 包括 设备总数/运行状态/功能按钮-->
-        <Grid Grid.Row="0" Margin="0 0 0 20">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
-            <!--数据统计-->
-            <StackPanel Grid.Column="0" Orientation="Horizontal">
-                <TextBlock Text="{Binding TotalCount,StringFormat='设备总数：{0}'}" FontSize="16" FontWeight="Bold" Margin="10 10 20 0"/>
-                <TextBlock Text="{Binding RunningCount, StringFormat='运行中：{0}'}" FontSize="16" Foreground="#4CAF50" Margin="0 10 20 0"/>
-                <TextBlock Text="{Binding AlarmCount, StringFormat='报警：{0}'}" FontSize="16" Foreground="#F44336" Margin="0 10 20 0"/>
-                <TextBlock Text="{Binding OfflineCount,StringFormat='离线：{0}'}" FontSize="16" Foreground="#9E9E9E" Margin="0 10 20 0"/>
-                <TextBlock Text="{Binding IdleCount,StringFormat='空闲：{0}'}" FontSize="16" Foreground="#9E9E9E" Margin="0 10 20 0"/>
-            </StackPanel>
-            <!--操作按钮-->
-            <StackPanel Grid.Column="1" Orientation="Horizontal">
-                <Button Content="刷新" Width="80" Height="30" Background="#2196F3" Foreground="White" BorderThickness="0" Margin="0 10 10 0" Command="{Binding RefreshCmd}"/>
-                <Button Content="工单查询" Width="80" Height="30" Background="#2196F3" Foreground="White" BorderThickness="0" Margin="0 10 10 0" Command="{Binding QueryWorkOrderCmd}"/>
-                <Button Content="报警记录" Width="80" Height="30" Background="#2196F3" Foreground="White" BorderThickness="0" Margin="0 10 10 0" Command="{Binding AlarmRecordCmd}"/>
-                <Button Content="保存至MySQL" Width="100" Height="30" Background="#2196F3" Foreground="White" BorderThickness="0" Margin="0 10 10 0" Padding="8 2"  Command="{Binding Save2MySqlCmd}"/>
-                <Button Content="从MySQL读取" Width="100" Height="30" Background="#2196F3" Foreground="White" BorderThickness="0" Margin="0 10 5 0" Padding="8 2"  Command="{Binding LoadFromSqlCmd}"/>
-               <!--  <Button Content="" Width="10" Height="30" Background="#2196F3" Foreground="White" BorderThickness="0" Margin="0 10 5 0" Padding="8 2"  Command="{Binding UpdateStatusCmd}"/>-->
-            </StackPanel>
+        <Grid Grid.Row="0" Margin="0 0 0 0" >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0" Margin="0 0 0 0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <!--数据统计-->
+                <StackPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <TextBlock Text="{Binding TotalCount,StringFormat='设备总数：{0}'}" FontSize="16" FontWeight="Bold" Margin="10 10 20 0"/>
+                    <TextBlock Text="{Binding RunningCount, StringFormat='运行中：{0}'}" FontSize="16" Foreground="#4CAF50" Margin="0 10 20 0"/>
+                    <TextBlock Text="{Binding AlarmCount, StringFormat='报警：{0}'}" FontSize="16" Foreground="#F44336" Margin="0 10 20 0"/>
+                    <TextBlock Text="{Binding OfflineCount,StringFormat='离线：{0}'}" FontSize="16" Foreground="#9E9E9E" Margin="0 10 20 0"/>
+                    <TextBlock Text="{Binding IdleCount,StringFormat='空闲：{0}'}" FontSize="16" Foreground="#9E9E9E" Margin="0 10 20 0"/>
+                </StackPanel>
+                <!--操作按钮-->
+                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                    <Button Content="刷新" Width="80" Height="30" Background="#2196F3" Foreground="White" BorderThickness="0" Margin="0 10 10 0" Command="{Binding RefreshCmd}"/>
+                    <Button Content="工单查询" Width="80" Height="30" Background="#2196F3" Foreground="White" BorderThickness="0" Margin="0 10 10 0" Command="{Binding QueryWorkOrderCmd}"/>
+                    <Button Content="报警记录" Width="80" Height="30" Background="#2196F3" Foreground="White" BorderThickness="0" Margin="0 10 10 0" Command="{Binding AlarmRecordCmd}"/>
+                    <Button Content="保存至MySQL" Width="100" Height="30" Background="#2196F3" Foreground="White" BorderThickness="0" Margin="0 10 10 0" Padding="8 2"  Command="{Binding Save2MySqlCmd}"/>
+                    <Button Content="从MySQL读取" Width="100" Height="30" Background="#2196F3" Foreground="White" BorderThickness="0" Margin="0 10 5 0" Padding="8 2"  Command="{Binding LoadFromSqlCmd}"/>
+                    <!--  <Button Content="" Width="10" Height="30" Background="#2196F3" Foreground="White" BorderThickness="0" Margin="0 10 5 0" Padding="8 2"  Command="{Binding UpdateStatusCmd}"/>-->
+                </StackPanel>
+            </Grid>
+            <Grid Grid.Row="1" Margin="0 0 0 10">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="10 10 0 0">
+                    <TextBox Text="{Binding FilterText,UpdateSourceTrigger=PropertyChanged}" 
+                             Width="100" Margin="0 0 0 0">
+                        <!-- 按回车搜索 -->
+                        <TextBox.InputBindings>
+                            <KeyBinding Key="Enter" Command="{Binding SearchCmd}"/>
+                        </TextBox.InputBindings>
+                        <!-- 占位符 -->
+                        <TextBox.Style>
+                            <Style TargetType="TextBox">
+                            <Style.Resources>
+                                <VisualBrush x:Key="PlaceHolderBrush" Opacity="0.5" Stretch="None" AlignmentX="Left">
+                                    <VisualBrush.Visual>
+                                        <TextBlock Text="请输入搜索内容" Margin="5 0 0 0 "/>
+                                    </VisualBrush.Visual>
+                                </VisualBrush>
+                            </Style.Resources>
+                         
+                            <Style.Triggers>
+                                 <Trigger Property="Text" Value="">
+                                     <Setter Property="Background" Value="{StaticResource PlaceHolderBrush}"/>
+                                 </Trigger>
+                                 <Trigger Property="IsFocused" Value="True">
+                                     <Setter Property="Background" Value="White"/>  
+                                 </Trigger>
+                             </Style.Triggers>
+                            </Style>
+                        </TextBox.Style>
+                    </TextBox>
+                    <Button Content="清空" Width="100" Margin="10 0 285 0" Command="{Binding ClearFilterCmd}"/>
+                </StackPanel>
+            </Grid>
         </Grid>
 
         <!--中间部分 设备列表-->
-        <ListView Grid.Row="1" Background="#FFFCF5F5" BorderThickness="0" ItemsSource="{Binding EquipmentList}">
+        <ListView Grid.Row="1" Background="#FFFCF5F5" BorderThickness="0" ItemsSource="{Binding FilterEqpView}">
             <ListView.View>
                 <GridView>
                     <!-- <GridViewColumn Header="ID" DisplayMemberBinding="{Binding Id}" Width="50"/> -->
@@ -72,10 +111,10 @@
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" >
                                     <!-- 状态指示灯 -->
-                                        <Ellipse Width="10" Height="10" Fill="{Binding Status,Converter={StaticResource StatusToColorConverter}}" Margin=" 0 0 5 0"/>
-                                   <!-- <TextBlock Text="{Binding Status}"/>-->
+                                    <Ellipse Width="10" Height="10" Fill="{Binding Status,Converter={StaticResource StatusToColorConverter}}" Margin=" 0 0 5 0"/>
+                                    <!-- <TextBlock Text="{Binding Status}"/>-->
                                     <!-- 下拉框 -->
-                                        <ComboBox Width="60"
+                                    <ComboBox Width="60"
                                               Margin=" 5 0 0 0"
                                               Loaded="ComboBox_Loaded"
                                               SelectedItem="{Binding Status,UpdateSourceTrigger=PropertyChanged}"

@@ -12,6 +12,9 @@ using System.Windows;
 using System.Data;
 using MySqlConnector;
 using System.Windows.Documents;
+using System.Windows.Data;
+using System.Threading;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Semiconductor_Equipment_Monitor
 {
@@ -38,6 +41,10 @@ namespace Semiconductor_Equipment_Monitor
         public ICommand AlarmRecordCmd { get; }//报警记录
         public ICommand Save2MySqlCmd { get; }//保存数据至数据库
         public ICommand LoadFromSqlCmd { get;}//从数据库读取数据
+        public ICommand ClearFilterCmd { get; set; }//清除搜索框
+        //public ICommand SearchCmd { get; set; }//搜索框输入完成按enter
+        public ICommand SearchCmd { get;  }//搜索框输入完成按enter  
+        //必须为只读属性 初始化之后不会为空 若是正常getset会导致赋值null 造成 未将对象引用设置到对象的实例
 
         ////临时测试update方法
         //public ICommand UpdateStatusCmd { get; }
@@ -63,6 +70,8 @@ namespace Semiconductor_Equipment_Monitor
             QueryWorkOrderCmd = new RelayCommand(QueryWorkOrder);//工单查询
             AlarmRecordCmd = new RelayCommand(ShowAlarmRecord);//报警记录
 
+            
+
             /*Save2MySqlCmd = new RelayCommand(SaveEquipment2MySql);*///保存数据至数据库
             //Save2MySqlCmd = new RelayCommand(EquipmentDataService.SaveEquipment2MySql(EquipmentList));错误 action委托无法引用带参数方法
             //用lambda表达式（）无参方法 调用 带参数方法
@@ -71,7 +80,20 @@ namespace Semiconductor_Equipment_Monitor
             ////测试//ok
             //UpdateStatusCmd = new RelayCommand(() => EquipmentDataService.UpdateSingleEqpStatus("EQP-001",EquipmentStatus.Running));
 
+
+            //filter
+            FilterEqpView = CollectionViewSource.GetDefaultView(EquipmentList);//包装一层 
+            FilterEqpView.Filter = EqpFilter;//Filter为predicate委托，参数类型必须是object类型
+
+            SearchCmd = new RelayCommand(() => FilterEqpView.Refresh());
+            ClearFilterCmd = new RelayCommand( () => 
+            { 
+                FilterText = string.Empty;
+                FilterEqpView.Refresh();
+            });//清空
         }
+
+       
 
         private void InitEquipmentData()//初始化设备列表
         {
@@ -189,7 +211,73 @@ namespace Semiconductor_Equipment_Monitor
             }
         }
 
-       
+
+
+        private string _filterText ;
+        //private CancellationTokenSource _filterDelayToken;//C#自带的取消令牌，专门用来叫停任务
+
+        public string FilterText 
+        {
+            get { return _filterText; }
+            set { 
+                 _filterText = value;
+                if (_filterText != "请输入搜索内容") 
+                {
+                    OnPropertyChanged();
+                    
+
+                    //////取消之前延时  
+                    ////_filterDelayToken?.Cancel();
+                    //_filterDelayToken = new CancellationTokenSource();
+                    ////停下300毫秒再搜索
+                    //Task.Delay(3000, _filterDelayToken.Token).ContinueWith(t =>
+                    //{
+                    //    if (!t.IsCanceled)
+                    //    { Application.Current.Dispatcher.Invoke(() => FilterEqpView.Refresh()); }
+                    //});
+                }
+            }
+        }
+
+        public ICollectionView FilterEqpView { get; set; }//icollectionview 对数据进行筛选，排序，分组
+
+        public bool EqpFilter(object obj)
+        {
+            try
+            {
+                if (FilterText == "请输入搜索内容")
+                    return true;
+                else if (string.IsNullOrWhiteSpace(FilterText))
+                    return true;
+                if (!string.IsNullOrEmpty(FilterText) && obj is Equipment equipment)
+                {
+                    //return equipment.EqpName?.Contains(FilterText)??false
+                    //    || equipment.DeviceName.Contains(FilterText)
+                    //    || equipment.EqpId.Contains(FilterText)
+                    //    || equipment.LineId.Contains(FilterText);
+
+                    //先判断是否为空 再进行过滤
+                    bool matchEqpName = equipment.EqpName != null && equipment.EqpName.Contains(FilterText);
+                    bool matchDeviceName = equipment.DeviceName !=null && equipment.DeviceName.Contains(FilterText);
+                    bool matchEqpid = equipment.EqpId != null && equipment.EqpId.Contains(FilterText);
+                    bool matchLineid = equipment.LineId !=null && equipment.LineId.Contains(FilterText);
+
+                    return matchEqpName || matchDeviceName || matchEqpid || matchLineid;
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show($"搜索出错啦：{ex.Message}");
+                return false;
+            }
+            
+        }
+
+
+
     }
 
     
