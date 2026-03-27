@@ -67,8 +67,19 @@ namespace Semiconductor_Equipment_Monitor
             
             //控件直接绑定view model 可随时更换RefreshEquipmentData方法 实现强大的解耦功能
             RefreshCmd = new RelayCommand(RefreshEquipmentData);//刷新
-            QueryWorkOrderCmd = new RelayCommand(QueryWorkOrder);//工单查询
-            AlarmRecordCmd = new RelayCommand(ShowAlarmRecord);//报警记录
+            QueryWorkOrderCmd = new RelayCommand(() => 
+            {
+                var WOW = new WorkOrderWindow();
+                WOW.ShowDialog();//模态窗口 关了才能开下一个窗口
+            
+            });//工单查询
+
+
+            AlarmRecordCmd = new RelayCommand(() => 
+            {
+                var ARW = new AlarmRecordWindow();
+                ARW.Show();//可以开多个窗口
+            });//报警记录
 
             
 
@@ -132,10 +143,10 @@ namespace Semiconductor_Equipment_Monitor
             isRefreshing = false;//刷新结束-解锁
         }
 
-        public void QueryWorkOrder()//工单查询
-        {
-            MessageBox.Show("正在查询工单.....");
-        }
+        //public void QueryWorkOrder()//工单查询
+        //{
+        //    MessageBox.Show("正在查询工单.....");
+        //}
 
 
         public void ShowAlarmRecord()//报警记录
