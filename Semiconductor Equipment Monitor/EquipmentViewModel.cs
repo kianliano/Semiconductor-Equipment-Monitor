@@ -149,10 +149,10 @@ namespace Semiconductor_Equipment_Monitor
         //}
 
 
-        public void ShowAlarmRecord()//报警记录
-        {
-            MessageBox.Show("正在查看报警记录.....");
-        }
+        //public void ShowAlarmRecord()//报警记录
+        //{
+        //    MessageBox.Show("正在查看报警记录.....");
+        //}
 
 
         

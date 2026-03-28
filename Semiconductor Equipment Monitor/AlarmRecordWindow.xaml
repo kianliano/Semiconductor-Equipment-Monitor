@@ -3,13 +3,72 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Semiconductor_Equipment_Monitor"
+        xmlns:local="clr-namespace:Semiconductor_Equipment_Monitor" d:DataContext="{d:DesignInstance Type=local:AlarmRecordViewModel}"
         mc:Ignorable="d"
         Title="AlarmRecordWindow" Height="450" Width="800">
     <Grid>
-        <DataGrid x:Name="alarmList"
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0" Margin="10 0 0 0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width ="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="0">
+                <TextBlock Text="报警记录页面" FontSize="16" Margin="10 0 10 0"/>
+                <Button Content="保存" Width="50" Command="{Binding ARVSaveCmd}" Margin="300 0 0 0"/>
+            </Grid>
+            <Grid Grid.Column="1" >
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 0 10 0">
+                    <TextBox Text="{Binding FilterText,UpdateSourceTrigger=PropertyChanged}" 
+                                    Width="100" Margin="0 0 0 0">
+                        <!-- 按回车搜索 -->
+                        <TextBox.InputBindings>
+                            <KeyBinding Key="Enter" Command="{Binding ARVSearchCmd}"/>
+                        </TextBox.InputBindings>
+                        <!-- 占位符 -->
+                        <TextBox.Style>
+                            <Style TargetType="TextBox">
+                                <Style.Resources>
+                                    <VisualBrush x:Key="PlaceHolderBrush" Opacity="0.5" Stretch="None" AlignmentX="Left">
+                                        <VisualBrush.Visual>
+                                            <TextBlock Text="请输入搜索内容" Margin="5 0 0 0 "/>
+                                        </VisualBrush.Visual>
+                                    </VisualBrush>
+                                </Style.Resources>
+
+                                <Style.Triggers>
+                                    <Trigger Property="Text" Value="">
+                                        <Setter Property="Background" Value="{StaticResource PlaceHolderBrush}"/>
+                                    </Trigger>
+                                    <Trigger Property="IsFocused" Value="True">
+                                        <Setter Property="Background" Value="White"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBox.Style>
+                    </TextBox>
+                    <Button Content="确认查询" Command="{Binding ARVSearchCmd}" Margin="10 0 10 0"/>
+                    <Button Content="清除" Command="{Binding ARVClearCmd}" Margin="10 0 10 0"/>
+                </StackPanel>
+            </Grid>
+           
+        </Grid>
+        <Grid Grid.Row="1" Margin="0 0 10 0">
+            <DataGrid x:Name="alarmList"
                   ItemsSource="{Binding AlarmList}"
-                  AutoGenerateColumns="True"
-                  CanUserAddRows="False"/>
+                  AutoGenerateColumns="False"
+                  CanUserAddRows="False">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="             报警信息" Binding="{Binding AlarmMessage}" Width="150" />
+                    <DataGridTextColumn Header="警报代码" Binding="{Binding AlarmId}" Width="60"/>
+                    <DataGridTextColumn Header="设备编号" Binding="{Binding EqpId}" Width="60"/>
+                    <DataGridTextColumn Header="     报警时间" Binding="{Binding Time}" Width="100"/>
+                    <DataGridCheckBoxColumn Header="是否处理" Binding="{Binding isHandled}" Width="60"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
     </Grid>
 </Window>
