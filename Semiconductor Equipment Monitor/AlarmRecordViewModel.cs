@@ -87,7 +87,7 @@ namespace Semiconductor_Equipment_Monitor
             set { 
                 _filterText = value;
                  OnPropertyChanged();
-                 //FilterAlarmRecordView.Refresh();//实施筛选 
+                 //FilterAlarmRecordView.Refresh();//实时筛选 
                 
             }
         }

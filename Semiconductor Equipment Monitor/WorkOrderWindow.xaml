@@ -3,15 +3,63 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Semiconductor_Equipment_Monitor"
+        xmlns:local="clr-namespace:Semiconductor_Equipment_Monitor" d:DataContext="{d:DesignInstance Type=local:WorkOrderViewModel}"
         mc:Ignorable="d"
         Title="WorkOrderWindow" Height="450" Width="800">
     <Grid>
-        <DataGrid x:Name="workOrderList"
-                  ItemsSource="{Binding WorkOrders}"
-                  AutoGenerateColumns="True"
-                  CanUserAddRows="False"
-                  Margin="10"/>
+        <Grid.RowDefinitions >
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0" Margin="0 5 0 0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="0">
+                <TextBlock Text="工单查询页面" FontSize="16" Width="200" HorizontalAlignment="Left" Margin="10 0 10 0"/>
+            </Grid>
+            <Grid Grid.Column="1" >
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 0 10 0">
+                    <TextBox Text="{Binding WOFilterText,UpdateSourceTrigger=PropertyChanged}"
+                             Width="100" Margin="0 0 0 0" Height="20.32">
+                        <!-- 按回车搜索 -->
+                        <TextBox.InputBindings>
+                            <KeyBinding Key="Enter" Command="{Binding WOSearchCmd}"/>
+                        </TextBox.InputBindings>
+                        <!-- 占位符 -->
+                        <TextBox.Style>
+                            <Style TargetType="TextBox">
+                                <Style.Resources>
+                                    <VisualBrush x:Key="PlaceHolderBrush" Opacity="0.5" Stretch="None" AlignmentX="Left">
+                                        <VisualBrush.Visual>
+                                            <TextBlock Text="请输入搜索内容" Margin="5 10 0 10"/>                                            
+                                        </VisualBrush.Visual>
+                                    </VisualBrush>
+                                </Style.Resources>
 
+                                <Style.Triggers>
+                                    <Trigger Property="Text" Value="">
+                                        <Setter Property="Background" Value="{StaticResource PlaceHolderBrush}"/>
+                                    </Trigger>
+                                    <Trigger Property="IsFocused" Value="True">
+                                        <Setter Property="Background" Value="White"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBox.Style>
+                    </TextBox>
+                    <Button Content="确认查询" Command="{Binding WOSearchCmd}" Margin="10 0 0 0"/>
+                    <Button Content="清除" Command="{Binding WOClearCmd}" Margin="10 0 0 0"/>
+                </StackPanel>
+            </Grid>
+        </Grid>
+        <Grid Grid.Row="1">
+            <DataGrid x:Name="workOrderList"
+              ItemsSource="{Binding WorkOrderList}"
+              AutoGenerateColumns="True"
+              CanUserAddRows="False"
+              Margin="10"/>
+        </Grid>
     </Grid>
 </Window>
